@@ -92,6 +92,21 @@
   .foot .links a:hover{color:var(--brand);}
   .foot .meta{color:var(--muted);font-size:13px;}
   .tag{font-style:italic;color:var(--green);font-weight:600;}
+  .waitlist{max-width:420px;margin:0 auto;}
+  .wl-row{display:flex;gap:10px;}
+  .wl-row input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:11px;
+    padding:13px 14px;font-family:'Inter Tight',sans-serif;font-size:16px;background:var(--surface);color:var(--ink);}
+  .wl-row button{background:var(--brand);color:#fff;border:none;border-radius:11px;
+    padding:0 20px;font-weight:700;font-size:15px;cursor:pointer;}
+  .wl-row button:disabled{opacity:.6;cursor:default;}
+  .wl-platform{display:flex;gap:14px;justify-content:center;margin-top:12px;
+    font-family:'Spline Sans Mono',monospace;font-size:12px;color:#5a5248;}
+  .wl-platform label{cursor:pointer;}
+  .wl-consent{display:block;margin-top:12px;font-size:13px;color:#4a443b;}
+  .wl-consent a{color:var(--brand);}
+  .wl-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
+  .wl-msg{min-height:20px;margin:12px 0 0;font-family:'Spline Sans Mono',monospace;font-size:13px;color:var(--muted);}
+  .wl-msg.ok{color:var(--green);font-weight:600;font-size:15px;}
 </style>
 </head>
 <body>
@@ -113,9 +128,23 @@
     <h1>Find the <span class="hl">cheapest</span> place to buy your groceries</h1>
     <p class="sub">Cheap-Cheap compares live prices across Shoprite, Pick n Pay, Checkers and
       Woolworths — so your whole basket costs less. <span class="tag">It makes more cents!</span></p>
-    <div class="cta">
-      <a class="btn soon" href="#"><span><small>Soon on the</small><span class="big">App Store</span></span></a>
-      <a class="btn soon" href="#"><span><small>Soon on</small><span class="big">Google Play</span></span></a>
+    <form id="waitlist" class="waitlist" novalidate>
+      <div class="wl-row">
+        <input id="wl-email" type="email" required placeholder="you@email.com" autocomplete="email" aria-label="Email">
+        <button type="submit" id="wl-btn">Notify me</button>
+      </div>
+      <div class="wl-platform" role="radiogroup" aria-label="Which platform?">
+        <label><input type="radio" name="platform" value="ios"> iOS</label>
+        <label><input type="radio" name="platform" value="android"> Android</label>
+        <label><input type="radio" name="platform" value="either" checked> Either</label>
+      </div>
+      <label class="wl-consent"><input type="checkbox" id="wl-consent" required> Email me when Cheap-Cheap launches (see <a href="privacy.html">privacy</a>).</label>
+      <input type="text" id="wl-company" class="wl-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p id="wl-msg" class="wl-msg" role="status"></p>
+    </form>
+    <div class="cta" style="margin-top:18px;">
+      <span class="btn soon"><span><small>Soon on the</small><span class="big">App Store</span></span></span>
+      <span class="btn soon"><span><small>Soon on</small><span class="big">Google Play</span></span></span>
     </div>
     <div class="label stat">1,800+ live prices · updated regularly</div>
   </header>
@@ -203,5 +232,31 @@
   </footer>
 
 </div>
+<script>
+(function(){
+  var SUPABASE_URL = "https://sfjhhihxvynmjvzdlkme.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_gex2Z4tEOyLDXK84lWNaQw__pNMkKlF";
+  var form = document.getElementById('waitlist'); if (!form) return;
+  var msg = document.getElementById('wl-msg'); var btn = document.getElementById('wl-btn');
+  function done(t){ ['.wl-row','.wl-platform','.wl-consent'].forEach(function(s){var el=form.querySelector(s); if(el) el.style.display='none';}); msg.textContent=t; msg.classList.add('ok'); }
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (document.getElementById('wl-company').value) { done("You're on the list! 🐣"); return; } // honeypot
+    var email = document.getElementById('wl-email').value.trim();
+    if (!email) { msg.textContent = "Pop in your email first."; return; }
+    if (!document.getElementById('wl-consent').checked) { msg.textContent = "Please tick the consent box."; return; }
+    var sel = form.querySelector('input[name=platform]:checked'); var platform = sel ? sel.value : 'either';
+    btn.disabled = true; msg.textContent = "Adding you…";
+    fetch(SUPABASE_URL + "/rest/v1/rpc/join_waitlist", {
+      method:'POST',
+      headers:{ 'apikey':SUPABASE_ANON_KEY, 'Authorization':'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':'application/json' },
+      body: JSON.stringify({ p_email: email, p_platform: platform })
+    }).then(function(r){
+      if (r.ok) { done("You're on the list! 🐣 We'll email you at launch."); }
+      else { btn.disabled=false; msg.textContent = "Hmm, that didn't work — please try again."; }
+    }).catch(function(){ btn.disabled=false; msg.textContent = "Network hiccup — please try again."; });
+  });
+})();
+</script>
 </body>
 </html>

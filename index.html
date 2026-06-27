@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheap-Cheap — Compare SA grocery prices</title>
+<meta name="description" content="Cheap-Cheap finds the cheapest place to buy your groceries across Shoprite, Pick n Pay, Checkers and Woolworths. Live prices, cheapest-first. It makes more cents!">
+<meta property="og:title" content="Cheap-Cheap — Compare SA grocery prices">
+<meta property="og:description" content="Live grocery prices across South Africa's big four retailers. Build a list, see the cheapest store for your whole basket.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="./assets/logo.png">
+<link rel="icon" href="./assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1ECE1; --surface:#FBF8F0; --ink:#1a1813; --brand:#E8332E; --green:#1E7B34;
+    --muted:#8a8276; --line:#ddd5c4; --leader:#c4baa6; --card:#e6ddc9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font-family:'Inter Tight',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55;}
+  .mono{font-family:'Spline Sans Mono',monospace;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 22px;}
+  a{color:inherit;}
+  .label{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:2px;
+         text-transform:uppercase;color:var(--muted);}
+
+  /* nav */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0;}
+  .brand{font-weight:800;font-size:22px;letter-spacing:-.5px;color:var(--brand);text-decoration:none;}
+  .nav-links a{margin-left:22px;text-decoration:none;font-weight:500;font-size:15px;color:var(--ink);}
+  .nav-links a:hover{color:var(--brand);}
+  @media(max-width:560px){.nav-links a{margin-left:14px;font-size:13px;}}
+
+  /* hero */
+  .hero{text-align:center;padding:46px 0 18px;}
+  .hero img.logo{width:170px;height:auto;margin-bottom:10px;}
+  .hero h1{font-size:46px;line-height:1.05;letter-spacing:-1.5px;margin:8px auto 12px;max-width:14ch;}
+  .hero h1 .hl{color:var(--brand);}
+  .hero p.sub{font-size:19px;color:#3a352c;max-width:46ch;margin:0 auto 26px;}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .btn{display:inline-flex;align-items:center;gap:9px;background:var(--ink);color:var(--paper);
+       text-decoration:none;border-radius:11px;padding:13px 20px;font-weight:600;font-size:15px;
+       box-shadow:0 10px 28px rgba(26,24,19,.22);}
+  .btn small{display:block;font-size:10px;font-weight:500;opacity:.7;letter-spacing:.5px;text-transform:uppercase;}
+  .btn .big{font-size:16px;font-weight:700;letter-spacing:-.3px;}
+  .btn.soon{background:var(--surface);color:var(--ink);border:1.5px dashed var(--leader);box-shadow:none;}
+  .stat{margin-top:20px;}
+
+  /* sections */
+  section{padding:48px 0;}
+  .sec-head{text-align:center;margin-bottom:30px;}
+  .sec-head h2{font-size:30px;letter-spacing:-.6px;margin:8px 0 6px;}
+  .sec-head p{color:var(--muted);margin:0;}
+
+  /* features grid */
+  .feats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  @media(max-width:680px){.feats{grid-template-columns:1fr;}}
+  .feat{background:var(--surface);border:1.5px solid var(--card);border-radius:14px;padding:20px 22px;}
+  .feat .k{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:1px;
+           text-transform:uppercase;color:var(--brand);}
+  .feat h3{font-size:18px;margin:7px 0 6px;letter-spacing:-.2px;}
+  .feat p{margin:0;color:#4a443b;font-size:15px;}
+
+  /* screenshots */
+  .screens{display:flex;gap:18px;overflow-x:auto;padding:6px 2px 14px;scroll-snap-type:x mandatory;}
+  .screens figure{margin:0;flex:0 0 auto;scroll-snap-align:center;text-align:center;}
+  .screens img{width:230px;height:auto;border-radius:22px;border:1px solid var(--line);
+               box-shadow:0 14px 40px rgba(26,24,19,.16);background:#fff;}
+  .screens figcaption{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.5px;
+                      color:var(--muted);margin-top:10px;text-transform:uppercase;}
+
+  /* stores */
+  .stores{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .chip{font-family:'Spline Sans Mono',monospace;font-size:13px;letter-spacing:.5px;
+        border:1.5px dashed var(--leader);border-radius:8px;padding:10px 16px;color:#5a5248;}
+
+  /* receipt CTA band */
+  .band{background:var(--ink);color:var(--paper);border-radius:20px;padding:40px 26px;text-align:center;}
+  .band h2{font-size:28px;letter-spacing:-.5px;margin:0 0 8px;}
+  .band p{color:#cfc6b4;margin:0 0 22px;}
+  .band .btn{background:var(--brand);color:#fff;box-shadow:none;}
+  .band .btn.soon{background:transparent;color:var(--paper);border-color:#5a5248;}
+
+  /* footer */
+  footer{border-top:1.5px dashed var(--leader);margin-top:24px;padding:30px 0 50px;}
+  .foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+  .foot .links a{text-decoration:none;font-weight:600;margin-right:18px;color:var(--ink);}
+  .foot .links a:hover{color:var(--brand);}
+  .foot .meta{color:var(--muted);font-size:13px;}
+  .tag{font-style:italic;color:var(--green);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <a class="brand" href="#top">Cheap-Cheap</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#screens">Screens</a>
+      <a href="support.html">Support</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <img class="logo" src="./assets/logo.png" alt="Cheap-Cheap logo">
+    <div class="label">Cape Town · 4 Stores · Live prices</div>
+    <h1>Find the <span class="hl">cheapest</span> place to buy your groceries</h1>
+    <p class="sub">Cheap-Cheap compares live prices across Shoprite, Pick n Pay, Checkers and
+      Woolworths — so your whole basket costs less. <span class="tag">It makes more cents!</span></p>
+    <div class="cta">
+      <a class="btn soon" href="#"><span><small>Soon on the</small><span class="big">App Store</span></span></a>
+      <a class="btn soon" href="#"><span><small>Soon on</small><span class="big">Google Play</span></span></a>
+    </div>
+    <div class="label stat">1,800+ live prices · updated regularly</div>
+  </header>
+
+  <section id="features">
+    <div class="sec-head">
+      <div class="label">Why Cheap-Cheap</div>
+      <h2>Less guessing. More saving.</h2>
+      <p>Built for South African shoppers.</p>
+    </div>
+    <div class="feats">
+      <div class="feat">
+        <div class="k">↓ Cheapest first</div>
+        <h3>Every store's price, ranked</h3>
+        <p>Search any staple and see all four retailers' prices instantly, cheapest at the top.</p>
+      </div>
+      <div class="feat">
+        <div class="k">By store</div>
+        <h3>The cheapest full basket</h3>
+        <p>Add your list and see each store's complete basket total — so you know the single
+          cheapest shop, and how much you save.</p>
+      </div>
+      <div class="feat">
+        <div class="k">instead of: …</div>
+        <h3>Smart substitutes</h3>
+        <p>If a store doesn't stock your exact item, Cheap-Cheap fills the gap with its closest
+          available product, so the comparison stays fair.</p>
+      </div>
+      <div class="feat">
+        <div class="k">Size-aware</div>
+        <h3>Search like you shop</h3>
+        <p>Type "milk 2L" and get just the 2 L milk. No login, no clutter, no personal data.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <div class="sec-head">
+      <div class="label">Take a look</div>
+      <h2>A receipt-clean experience</h2>
+      <p>Swipe through the app.</p>
+    </div>
+    <div class="screens">
+      <figure><img src="./screens/home.png" alt="Home screen"><figcaption>Home</figcaption></figure>
+      <figure><img src="./screens/results.png" alt="Search results"><figcaption>Cheapest-first results</figcaption></figure>
+      <figure><img src="./screens/mylist.png" alt="My List"><figcaption>My list</figcaption></figure>
+      <figure><img src="./screens/bystore.png" alt="By store"><figcaption>By store</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div class="label">Coverage</div>
+      <h2>South Africa's big four</h2>
+    </div>
+    <div class="stores">
+      <span class="chip">Shoprite</span>
+      <span class="chip">Pick n Pay</span>
+      <span class="chip">Checkers</span>
+      <span class="chip">Woolworths</span>
+      <span class="chip">Western Cape pricing</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="band">
+      <h2>Stop overpaying for groceries.</h2>
+      <p>Cheap-Cheap is coming to the App Store and Google Play.</p>
+      <div class="cta">
+        <a class="btn soon" href="#"><span><small>Soon on the</small><span class="big">App Store</span></span></a>
+        <a class="btn soon" href="#"><span><small>Soon on</small><span class="big">Google Play</span></span></a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot">
+      <div class="links">
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="support.html">Support</a>
+        <a href="mailto:g.mostertpot@gmail.com">Contact</a>
+      </div>
+      <div class="meta">© 2026 Cheap-Cheap · <span class="tag">It makes more cents!</span></div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
